@@ -1,0 +1,11 @@
+{
+  "name": "react-redux-pattern-library",
+  "version": "0.1.0",
+  "description": "A pattern library where you import React Components and use a Redux store to change state",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher Rolfe <christopher.rolfe198@gmail.com>",
+  "license": "MIT"
+}
