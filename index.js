@@ -6,16 +6,16 @@ import ListComponent from './lib/Components/ListComponent';
 const express = require('express');
 const app = express();
 
-app.get('/:component*', function (req, res) {
+app.get('/:component*?', function (req, res) {
   let paramsComponent = req.params;
-  if (Object.keys(paramsComponent).length > 1) {
+  if (paramsComponent.component !== undefined && Object.keys(paramsComponent).length > 1) {
     const component = paramsComponent.component;
     delete paramsComponent.component;
 
     let componentPath = components[component];
 
     for (const item of Object.keys(paramsComponent)) {
-      if (paramsComponent[item].length) {
+      if (paramsComponent[item] && paramsComponent[item].length) {
         console.log(paramsComponent[item].replace(/^\//, ''), paramsComponent);
         componentPath = componentPath[paramsComponent[item].replace(/^\//, '')];
       }
@@ -25,16 +25,18 @@ app.get('/:component*', function (req, res) {
     if (typeof componentPath === 'function') {
       res.send(renderToString(componentPath()));
     } else if (typeof componentPath === 'object') {
-      const string = renderToString(ListComponent({
+      res.send(renderToString(ListComponent({
         components: Object.keys(componentPath).map(key => componentPath[key])
-      }));
-      console.log(string);
-      res.send(string);
+      })));
     } else {
       res.send('uh oh');
     }
-  } else {
+  } else if (paramsComponent.component !== undefined && Object.keys(paramsComponent).length === 1) {
     res.send(renderToString(components[paramsComponent.component]()));
+  } else {
+    res.send(renderToString(ListComponent({
+      components: Object.keys(components).map(key => components[key])
+    })))
   }
 });
 
